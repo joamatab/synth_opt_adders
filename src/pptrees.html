@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pptrees package &mdash; Parallel prefix tree generation and exploration 0.0.2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Parallel Prefix Tree generation and exploration" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Parallel prefix tree generation and exploration
+          </a>
+              <div class="version">
+                0.0.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pptrees package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pptrees.adder_tree">pptrees.adder_tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pptrees.modules">pptrees.modules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pptrees.prefix_graph">pptrees.prefix_graph module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pptrees.prefix_tree">pptrees.prefix_tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pptrees.util">pptrees.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pptrees">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Parallel prefix tree generation and exploration</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+        
+          
+            <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>pptrees package</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/tdene/synth_opt_adders/blob/issue_#13/doc/src/pptrees.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pptrees-package">
+<h1>pptrees package<a class="headerlink" href="#pptrees-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-pptrees.adder_tree">
+<span id="pptrees-adder-tree-module"></span><h2>pptrees.adder_tree module<a class="headerlink" href="#module-pptrees.adder_tree" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pptrees.adder_tree.adder_tree">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pptrees.adder_tree.</span></span><span class="sig-name descname"><span class="pre">adder_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ripple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_defs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'black':</span> <span class="pre">'ppa_black',</span> <span class="pre">'first_pre':</span> <span class="pre">'ppa_first_pre',</span> <span class="pre">'grey':</span> <span class="pre">'ppa_grey',</span> <span class="pre">'post':</span> <span class="pre">'ppa_post',</span> <span class="pre">'pre':</span> <span class="pre">'ppa_pre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_idem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/adder_tree.html#adder_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.adder_tree.adder_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pptrees.prefix_tree.prefix_tree" title="pptrees.prefix_tree.prefix_tree"><code class="xref py py-class docutils literal notranslate"><span class="pre">pptrees.prefix_tree.prefix_tree</span></code></a></p>
+<p>Class that generates parallel prefix adder trees</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.adder_tree.adder_tree.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ripple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_defs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'black':</span> <span class="pre">'ppa_black',</span> <span class="pre">'first_pre':</span> <span class="pre">'ppa_first_pre',</span> <span class="pre">'grey':</span> <span class="pre">'ppa_grey',</span> <span class="pre">'post':</span> <span class="pre">'ppa_post',</span> <span class="pre">'pre':</span> <span class="pre">'ppa_pre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_idem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/adder_tree.html#adder_tree.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.adder_tree.adder_tree.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a parallel prefix tree adder</p>
+<p>Refer to the prefix_tree’s docstring for a full description.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.adder_tree.adder_tree._hdl_preamble">
+<span class="sig-name descname"><span class="pre">_hdl_preamble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/adder_tree.html#adder_tree._hdl_preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.adder_tree.adder_tree._hdl_preamble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the preamble of the graph’s HDL</p>
+<p>This method implements prefix_graph’s counterpart for adders.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pptrees.modules">
+<span id="pptrees-modules-module"></span><h2>pptrees.modules module<a class="headerlink" href="#module-pptrees.modules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-pptrees.prefix_graph">
+<span id="pptrees-prefix-graph-module"></span><h2>pptrees.prefix_graph module<a class="headerlink" href="#module-pptrees.prefix_graph" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pptrees.prefix_graph.</span></span><span class="sig-name descname"><span class="pre">prefix_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">networkx.classes.multidigraph.MultiDiGraph</span></code></p>
+<p>Defines a di-graph of prefix nodes and edges</p>
+<p>The basic internal structure of the graph is a 2-D array of nodes</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Syntactic sugar to allow self[x,y] instead of self.node_list[y][x]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a prefix summation graph</p>
+<p>Pre-condition: width is an integer
+Post-conditions: creates a 2-D array of all nodes; runs nx.DiGraph’s init</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph._hdl_blocks">
+<span class="sig-name descname"><span class="pre">_hdl_blocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph._hdl_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph._hdl_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes HDL of the graph’s blocks</p>
+<p>Returns a tuple consisting of the HDL string,
+and the block module definitions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph._hdl_preamble">
+<span class="sig-name descname"><span class="pre">_hdl_preamble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph._hdl_preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph._hdl_preamble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the preamble of the graph’s HDL</p>
+<p>This abstract method is meant to be implemented by child classes.</p>
+<p>Returns a tuple consisting of the HDL string,
+and any modules used by the preamble.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.add_best_blocks">
+<span class="sig-name descname"><span class="pre">add_best_blocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.add_best_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.add_best_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Groups nodes belonging to each critical path inside blocks</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.add_block">
+<span class="sig-name descname"><span class="pre">add_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">nodes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.add_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.add_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new module block of nodes</p>
+<p>This is a group of nodes that are flattened together
+into a single monolithic module.</p>
+<p>Pre-condition:
+nodes is a list of nodes, all of which have attribute block = None
+Post-condition: adds new module block, containing specific nodes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.add_edge">
+<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pin1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pin2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.add_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an edge between two nodes in the graph</p>
+<p>Pre-conditions:
+n1, n2 are prefix_nodes in this prefix_graph
+n1, n2 are on adjacent levels [use buffers otherwise]
+pin1, pin2 are valid, unassigned, ports of n1, n2, respectively
+only one of (pin1, pin2) is an input, the other being an output
+specifically, to keep code simple, pin1 is output and pin2 is input</p>
+<p>Post-condition: adds edge between target nodes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.add_node">
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.add_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a prefix_node to the prefix_graph</p>
+<p>Pre-condtions:
+0 &lt;= node.x &lt; width
+0 &lt;= node.y &lt;= len(self.node_list) [no skipping levels!!!]
+Post-condition: adds node to graph and 2-D array of all nodes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.hdl">
+<span class="sig-name descname"><span class="pre">hdl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'behavioral'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.hdl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.hdl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs HDL representation of graph</p>
+<p>out is an optional file to write the HDL to
+full_flat is an optional argument that can fully flatten the netlist</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.longest_path">
+<span class="sig-name descname"><span class="pre">longest_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.longest_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.longest_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate longest path from any node not in a block to the output</p>
+<p>Note that neither the start nor end point may be a buffer
+(why was this decision made? TO-DO: Re-evaluate this decision)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.remove_all_blocks">
+<span class="sig-name descname"><span class="pre">remove_all_blocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.remove_all_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.remove_all_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all module block definitions from graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.remove_all_edges">
+<span class="sig-name descname"><span class="pre">remove_all_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.remove_all_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.remove_all_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all edges between two nodes</p>
+<p>NetworkX has no way to remove all edges between 2 nodes in a
+MultiGraph?  Keep removing until an Exception is thrown?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.remove_block">
+<span class="sig-name descname"><span class="pre">remove_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.remove_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.remove_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a module block definition</p>
+<p>This is a group of nodes that are flattened together
+into a single monolithic module.</p>
+<p>Pre-condition: block is a valid block ID
+Post-condition: removes block</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_graph.remove_node">
+<span class="sig-name descname"><span class="pre">remove_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_graph.remove_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_graph.remove_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes node from graph as well as nodelist array</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pptrees.prefix_graph.</span></span><span class="sig-name descname"><span class="pre">prefix_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Defines a node in the prefix summation graph</p>
+<p>Nodes have an x position (bit), y position (level),
+the module they are representing (black, grey, etc),
+and two dictionary of edges</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.__gt__">
+<span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.__gt__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define greater-than by position in tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a node in the prefix summation graph</p>
+<p>Pre-conditions:
+x, y are integers
+module is a valid module from the modules list
+flat is an optional flag to determine how HDL is output
+custom_module is an optional alternative for providing</p>
+<blockquote>
+<div><p>a module definition that is not included in modules</p>
+</div></blockquote>
+<p>Post-conditions:
+stores all these values into internal variables
+creates two dictionaries of input/output edges</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.__lt__">
+<span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.__lt__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define less-than by position in tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic representation of node that can partially recreate it</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently returns same representation as __repr__</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node._exists">
+<span class="sig-name descname"><span class="pre">_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node._exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node._exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static helper function that checks whether a node is not invis</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node._flat">
+<span class="sig-name descname"><span class="pre">_flat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node._flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node._flat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return block of verilog consisting of the module’s logic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node._in_tree">
+<span class="sig-name descname"><span class="pre">_in_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node._in_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node._in_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static helper function that checks whether a node is in the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node._isbuf">
+<span class="sig-name descname"><span class="pre">_isbuf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node._isbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node._isbuf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static helper function that checks whether a node is a buffer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node._parse_net">
+<span class="sig-name descname"><span class="pre">_parse_net</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node._parse_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node._parse_net" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static helper function that converts a net’s ID to its name in HDL</p>
+<dl class="simple">
+<dt>These come in 3 possible flavors:</dt><dd><ul class="simple">
+<li><p>None (unassigned net) -&gt; parsed to n0</p></li>
+<li><p>Integer (assigned net) -&gt; parsed to n`Integer</p></li>
+<li><p>Hardcoded name ($net_name) -&gt; parsed to net_name</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node._verilog">
+<span class="sig-name descname"><span class="pre">_verilog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node._verilog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node._verilog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return single line of verilog consisting of module instantiation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.flatten">
+<span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine which verilog representation to output</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_graph.prefix_node.hdl">
+<span class="sig-name descname"><span class="pre">hdl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_graph.html#prefix_node.hdl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_graph.prefix_node.hdl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return HDL representation of node</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pptrees.prefix_tree">
+<span id="pptrees-prefix-tree-module"></span><h2>pptrees.prefix_tree module<a class="headerlink" href="#module-pptrees.prefix_tree" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pptrees.prefix_tree.</span></span><span class="sig-name descname"><span class="pre">prefix_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ripple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_defs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_idem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pptrees.prefix_graph.prefix_graph" title="pptrees.prefix_graph.prefix_graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">pptrees.prefix_graph.prefix_graph</span></code></a></p>
+<p>Class that generates parallel prefix trees</p>
+<p>Trees are initialized to a serial structures (ripple-carry-like)
+Trees can morph via any of three, reversible, transforms:
+L-&gt;F, F-&gt;L, L-&gt;T, T-&gt;L, F-&gt;T, T-&gt;F</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.FL">
+<span class="sig-name descname"><span class="pre">FL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.FL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.FL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an FL transform on the specified node, if possible</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are not satisfied,
+the function returns (None,None).
+Otherwise, the function returns the co-ordinates of the main
+pivot of the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.FT">
+<span class="sig-name descname"><span class="pre">FT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.FT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.FT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an FT transform on the specified node, if possible</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are not satisfied,
+the function returns (None,None).
+Otherwise, the function returns the co-ordinates of the main
+pivot of the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.LF">
+<span class="sig-name descname"><span class="pre">LF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.LF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.LF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an LF transform on the specified node, if possible</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are not satisfied,
+the function returns (None,None).
+Otherwise, the function returns the co-ordinates of the main
+pivot of the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.LT">
+<span class="sig-name descname"><span class="pre">LT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.LT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.LT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an LT transform on the specified node, if possible</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are not satisfied,
+the function returns (None,None).
+Otherwise, the function returns the co-ordinates of the main
+pivot of the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.TF">
+<span class="sig-name descname"><span class="pre">TF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.TF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.TF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a TF transform on the specified node, if possible</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are not satisfied,
+the function returns (None,None).
+Otherwise, the function returns the co-ordinates of the main
+pivot of the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.TL">
+<span class="sig-name descname"><span class="pre">TL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.TL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.TL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a TL transform on the specified node, if possible</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are not satisfied,
+the function returns (None,None).
+Otherwise, the function returns the co-ordinates of the main
+pivot of the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ripple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_defs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_idem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a parallel prefix tree</p>
+<dl>
+<dt>Pre-conditions:</dt><dd><p>width is an integer
+network is a valid initial network choice (defaults to ripple)
+node_defs is a dictionary that defines the following nodes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘pre’ (pre-processing)</p></li>
+<li><p>‘post’ (post-processing)</p></li>
+<li><p>‘black’ (prefix operation)</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>Optional node definitions include but are not limited to:</dt><dd><ul class="simple">
+<li><p>‘first_pre’ (right-most pre-processing node)</p></li>
+<li><p>‘grey’ (prefix operation in the last row)</p></li>
+</ul>
+</dd>
+</dl>
+<p>is_idem is a boolean noting if the prefix operation is idempotent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redefine the length property as the y-axis size of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._add_pre">
+<span class="sig-name descname"><span class="pre">_add_pre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._add_pre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._add_pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal function; connects node diagonally to a predecessor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._add_top">
+<span class="sig-name descname"><span class="pre">_add_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._add_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._add_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal function; connects node to its vertical predecessor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._checkFL">
+<span class="sig-name descname"><span class="pre">_checkFL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._checkFL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._checkFL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether an FL transform can be applied on a node</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are satisfied,
+the function returns the two transform pivots, a and b
+as well as any cells it must add and their predecessors, c and d.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._checkFT">
+<span class="sig-name descname"><span class="pre">_checkFT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._checkFT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._checkFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether an FT transform can be applied on a node</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are satisfied,
+the function returns the two transform pivots, a and b
+as well as any cells it must add and their predecessors, c and d.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._checkLF">
+<span class="sig-name descname"><span class="pre">_checkLF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._checkLF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._checkLF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether an LF transform can be applied on a node</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are satisfied,
+the function returns the two transform pivots, a and b
+as well as any cells it must add and their predecessors, c and d.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._checkLT">
+<span class="sig-name descname"><span class="pre">_checkLT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._checkLT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._checkLT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether an LT transform can be applied on a node</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are satisfied,
+the function returns the two transform pivots, a and b
+as well as any cells it must add and their predecessors, c and d.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._checkTF">
+<span class="sig-name descname"><span class="pre">_checkTF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._checkTF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._checkTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether a TF transform can be applied on a node</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are satisfied,
+the function returns the two transform pivots, a and b
+as well as any cells it must add and their predecessors, c and d.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._checkTL">
+<span class="sig-name descname"><span class="pre">_checkTL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._checkTL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._checkTL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether a TL transform can be applied on a node</p>
+<p>The node is specified using its (x,y) co-ordinate
+Withholding the y-coordinate will check the entire x-column
+from bottom-up.</p>
+<p>If the transform’s initial requirements are satisfied,
+the function returns the two transform pivots, a and b
+as well as any cells it must add and their predecessors, c and d.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._is_below">
+<span class="sig-name descname"><span class="pre">_is_below</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._is_below"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._is_below" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether n2 is directly south of n1</p>
+<p>NOTE: This function currently has no present, nor foreseeable, use.
+Candidate for trimming.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._is_pg_end_node">
+<span class="sig-name descname"><span class="pre">_is_pg_end_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._is_pg_end_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._is_pg_end_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the set of nodes, a, is P/G equivalent with the i’th end node</p>
+<dl class="simple">
+<dt>Pre-conditions:</dt><dd><p>a is an iterable, b is an integer denoting a column</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._is_pg_subset">
+<span class="sig-name descname"><span class="pre">_is_pg_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._is_pg_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._is_pg_subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the P/G of b is a subset of the P/G of a</p>
+<dl class="simple">
+<dt>Pre-conditions:</dt><dd><p>a and b are both iterables</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._morph_node">
+<span class="sig-name descname"><span class="pre">_morph_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_warn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_pre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._morph_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._morph_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal function to morph a node to another type</p>
+<p>no_warn and no_pre should NOT be set to True
+unless EXTREME care is taken</p>
+<p>In general, the existence and use of this function is a
+severe moral hazard, and alternatives must be investigated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._possible_pres">
+<span class="sig-name descname"><span class="pre">_possible_pres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._possible_pres"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._possible_pres" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns of list of all valid diagonal predecessors of node n</p>
+<dl>
+<dt>Pre-conditions:</dt><dd><p>n is a valid node in the main part of the tree
+c is a list of “hypothetical” valid cells that do not</p>
+<blockquote>
+<div><p>yet exist, but are treated as though they do</p>
+</div></blockquote>
+<dl class="simple">
+<dt>d is a list of “hypothetical” diagonal predecessors</dt><dd><p>of each respective cell listed by c</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._recalc_pg">
+<span class="sig-name descname"><span class="pre">_recalc_pg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._recalc_pg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._recalc_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recalculates the group P/G of a node</p>
+<p>TO-DO: Rename P/G to a more general, addition-nonspecific, term.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._remains_pg_valid">
+<span class="sig-name descname"><span class="pre">_remains_pg_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._remains_pg_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._remains_pg_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the node, b, can be equivalently replaced by a set of nodes</p>
+<dl class="simple">
+<dt>Pre-condition:</dt><dd><p>n is (x,y) coordinate tuple
+b is an iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._to_sklansky">
+<span class="sig-name descname"><span class="pre">_to_sklansky</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._to_sklansky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._to_sklansky" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal function; transforms an ripple structure to Sklansky</p>
+<p>Uses transforms, as opposed to __init__ which simply places nodes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree._valid_tops">
+<span class="sig-name descname"><span class="pre">_valid_tops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_bits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree._valid_tops"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree._valid_tops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds cells that must be created if a is disconnected from pre(a) = b</p>
+<p>The situation is the following. b is the diagonal predecessor of a.
+However, we want to disconnect a from b.
+Nodes must be added to preserve the tree’s validity.
+The possibility tree of nodes to be added is explored via a full recursion.</p>
+<p>a is a node in the tree
+b is its current diagonal predecessor
+a_bits are the nodes that feed into a:</p>
+<blockquote>
+<div><p>its current top
+its new diagonal predecessor after the change (if any)</p>
+</div></blockquote>
+<p>x is the closest node north of a that is empty (available)</p>
+<dl class="simple">
+<dt>c is a list of “hypothetical” cells that do not yet exist,</dt><dd><p>but could be added in to fix the tree.</p>
+</dd>
+</dl>
+<p>d is a list of c’s diagonal predecessor connections.
+path is the path that a specific recursive branch has taken.
+result is the final output of a specific recursive branch</p>
+<p>This function explores possibilities by recursing up through
+possible branches. Each explored branch returns the smallest
+list of necessary changes it finds. Thus, the overall method
+returns one of the smallest tuples of changes needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.add_layer">
+<span class="sig-name descname"><span class="pre">add_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.add_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.add_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an extra layer at the bottom of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.add_node">
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.add_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a node to the tree, optionally with a pre-defined diagonal connection”</p>
+<dl class="simple">
+<dt>Pre-conditions:</dt><dd><p>n is a valid new node
+pre is either None or a node in the graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.batch_transform">
+<span class="sig-name descname"><span class="pre">batch_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.batch_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.batch_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a series of identical transforms as a batch</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.bot">
+<span class="sig-name descname"><span class="pre">bot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.bot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.bot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the y+1 neighbor of node n</p>
+<p>Pre-condition: n is a valid node in the main part of the tree
+Note: stops before reaching post-processing logic.
+If used on the bottom row of main nodes, returns None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.check_tree">
+<span class="sig-name descname"><span class="pre">check_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.check_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.check_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if tree is valid</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.clean">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compresses the graph and eliminates redundant nodes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.compact">
+<span class="sig-name descname"><span class="pre">compact</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.compact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.compact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts up all nodes it can</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.harris_step">
+<span class="sig-name descname"><span class="pre">harris_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot_bit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_bit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.harris_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.harris_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a sequence of transforms that lead to a Harris step</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.png">
+<span class="sig-name descname"><span class="pre">png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'out.png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a PNG of the prefix tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of diagonal successors for node n</p>
+<p>If n is a buffer, this list is empty.
+TO-DO: Investigate whether this functionality for buffers is intended.</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.pre">
+<span class="sig-name descname"><span class="pre">pre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.pre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the diagonal predecessor of node n</p>
+<p>If n is a buffer, this returns the vertical predecessor.
+Or, it should, but the functionality appears to have been removed.</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.r_bot">
+<span class="sig-name descname"><span class="pre">r_bot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.r_bot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.r_bot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the closest valid cell south of node n</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.r_pre">
+<span class="sig-name descname"><span class="pre">r_pre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.r_pre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.r_pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverses as far up diagonally through predecessors as possible</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+<p>NOTE: This function currently has no present, nor foreseeable, use.
+Candidate for trimming.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.r_right">
+<span class="sig-name descname"><span class="pre">r_right</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.r_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.r_right" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the closest valid cell east of node n</p>
+<dl>
+<dt>Pre-conditions:</dt><dd><p>n is a valid node in the main part of the tree
+c is a list of “hypothetical” valid cells that do not</p>
+<blockquote>
+<div><p>yet exist, but are treated as though they do</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.r_top">
+<span class="sig-name descname"><span class="pre">r_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.r_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.r_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the closest valid cell north of node n</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.recalc_weights">
+<span class="sig-name descname"><span class="pre">recalc_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.recalc_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.recalc_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the weights of all edges</p>
+<p>This returns a rough approximation of their delay.
+The calculation is performed using logical effort
+and approximated coupling capacitance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.reduce_idem">
+<span class="sig-name descname"><span class="pre">reduce_idem</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.reduce_idem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.reduce_idem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Eliminates redundant nodes</p>
+<p>As of commit 194923b83, this relies on node group P/G</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.right">
+<span class="sig-name descname"><span class="pre">right</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.right" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the x-1 neighbor of node n</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.shift_node">
+<span class="sig-name descname"><span class="pre">shift_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_pre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.shift_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.shift_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shifts a node in the direction specified by fun</p>
+<p>Can only shift nodes if there is nothing in the way.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.top">
+<span class="sig-name descname"><span class="pre">top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the y-1 neighbor of node n</p>
+<p>Pre-condition: n is a valid node in the main part of the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.trim_layer">
+<span class="sig-name descname"><span class="pre">trim_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.trim_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.trim_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trims the last row of the tree if it is empty</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.trim_layers">
+<span class="sig-name descname"><span class="pre">trim_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.trim_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.trim_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeatedly calls trim_layer until no more can be trimmed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pptrees.prefix_tree.prefix_tree.walk_downstream">
+<span class="sig-name descname"><span class="pre">walk_downstream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fun=&lt;function</span> <span class="pre">prefix_tree.&lt;lambda&gt;&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/prefix_tree.html#prefix_tree.walk_downstream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.prefix_tree.prefix_tree.walk_downstream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverse the graph downstream of node n, applying fun to each node</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pptrees.util">
+<span id="pptrees-util-module"></span><h2>pptrees.util module<a class="headerlink" href="#module-pptrees.util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pptrees.util.lg">
+<span class="sig-prename descclassname"><span class="pre">pptrees.util.</span></span><span class="sig-name descname"><span class="pre">lg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/util.html#lg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.util.lg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the base-2 logarithm of x, rounded up</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pptrees.util.sub_brackets">
+<span class="sig-prename descclassname"><span class="pre">pptrees.util.</span></span><span class="sig-name descname"><span class="pre">sub_brackets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pptrees/util.html#sub_brackets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pptrees.util.sub_brackets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reformats ‘a[0]’ to ‘a_0’</p>
+</dd></dl>
+
+</section>
+<section id="module-pptrees">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pptrees" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Parallel Prefix Tree generation and exploration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Teodor-Dumitru Ene.</p>
+  </div>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/buildthedocs/sphinx.theme">theme</a>
+    provided by <a href="https://buildthedocs.github.io">Build the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

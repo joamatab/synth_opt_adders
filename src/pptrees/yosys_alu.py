@@ -28,9 +28,9 @@ class yosys_alu(adder_tree):
         file_suffix = ".v"
 
         # Locate mapping file and check its existence
-        map_file = mapping+'_map'+file_suffix
+        map_file = f'{mapping}_map{file_suffix}'
         with importlib.resources.path("pptrees.mappings",map_file) as pkg_map_file:
-            local_map_file = outdir / (mapping+'_map'+file_suffix)
+            local_map_file = outdir / f'{mapping}_map{file_suffix}'
 
             if not pkg_map_file.is_file():
                 raise ValueError("unsupported mapping requested")

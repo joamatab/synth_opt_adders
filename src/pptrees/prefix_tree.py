@@ -58,7 +58,7 @@ class prefix_tree(graph):
                 n.outs['gout'][0]="$g{0}".format(a-1)
 
         # Initialize to Sklansky
-        if network=="sklansky" or network=="brent-kung":
+        if network in ["sklansky", "brent-kung"]:
             for a in range(1,self.w):
                 num_buf = 2**(a-1)
                 ctr = num_buf
@@ -70,28 +70,20 @@ class prefix_tree(graph):
                         self.add_node(node(b,a,'invis_node'))
                         ctr = num_buf-1
                     else:
-                        if a == lg(b)+1:
-                            node_color = "grey"
-                        else:
-                            node_color = "black"
+                        node_color = "grey" if a == lg(b)+1 else "black"
                         self.add_node(node(b,a,self.node_defs[node_color]),pre=self[b+ctr-1,a-1])
                         ctr-=1
             self.dna="sklansky"
-        # Initialize to Kogge-Stone
         elif network=="kogge-stone":
             for a in range(1,self.w):
                 for b in range(self.w):
                     num_buf = 2**(a-1)
                     if b>num_buf-1:
-                        if a == lg(b)+1:
-                            node_color = "grey"
-                        else:
-                            node_color = "black"
+                        node_color = "grey" if a == lg(b)+1 else "black"
                         self.add_node(node(b,a,self.node_defs[node_color]),pre=self[b-num_buf,a-1])
                     else:
                         self.add_node(node(b,a,self.node_defs['buffer']))
             self.dna="kogge-stone"
-        # Initialize serial structure
         else:
             for a in range(1,self.w):
                 for b in range(self.w):
@@ -140,12 +132,7 @@ class prefix_tree(graph):
         # Calls on super-method
         n = super().add_node(n)
 
-        # Keeps track of group propagates/generates
-        n.pg=0
-        # Initialize pg if node is P/G node
-        if modules[n.m]['type']=='pre':
-            n.pg=1<<n.x
-
+        n.pg = 1<<n.x if modules[n.m]['type']=='pre' else 0
         # Connects up
         self._add_top(n)
         # Connects diagonally
@@ -343,8 +330,7 @@ class prefix_tree(graph):
 
         update_flag = no_pre
 
-        # Re-apply pre
-        if (pre is not None and not no_pre):
+        if pre is not None and not update_flag:
             # Raise error if you're morphing
             # from a node with pre to one without
             if (node._exists(n) and not node._isbuf(n)) and \
@@ -374,7 +360,7 @@ class prefix_tree(graph):
         Can only shift nodes if there is nothing in the way.
         """
 
-        if fun==None:
+        if fun is None:
             fun=self.top
 
         # Grab the invis we're swapping with
@@ -399,9 +385,8 @@ class prefix_tree(graph):
         # Run pre/post error checks
         if pre is not None and pre.y>=inv.y:
             raise ValueError("cannot shift node past predecessor")
-        if inv.y > n.y:
-            if len(post)>0:
-                raise ValueError("cannot shift node past successor")
+        if inv.y > n.y and len(post) > 0:
+            raise ValueError("cannot shift node past successor")
 
         # If new_pre is provided, use that, not what we calculate
         if new_pre is not None:
@@ -411,11 +396,7 @@ class prefix_tree(graph):
 
         # if ∃ post(n):
         # add buffer instead of inv
-        if len(post)>0:
-            new_m=self.node_defs['buffer']
-        else:
-            new_m='invis_node'
-
+        new_m = self.node_defs['buffer'] if len(post)>0 else 'invis_node'
         # Morph nodes
         # Note that this sets no_pre, which is not advised
         new_n = self._morph_node(inv,n.m,no_pre=True)
@@ -432,9 +413,7 @@ class prefix_tree(graph):
 
         Pre-condition: n is a valid node in the main part of the tree
         """
-        if n is None or n.y==0:
-            return None
-        return self[n.x,n.y-1]
+        return None if n is None or n.y==0 else self[n.x,n.y-1]
 
     def r_top(self,n):
         """Returns the closest valid cell north of node n
@@ -468,9 +447,7 @@ class prefix_tree(graph):
 
         Pre-condition: n is a valid node in the main part of the tree
         """
-        if n is None or n.x==0:
-            return None
-        return self[n.x-1,n.y]
+        return None if n is None or n.x==0 else self[n.x-1,n.y]
 
     def r_right(self,n,c=[]):
         """Returns the closest valid cell east of node n
@@ -494,10 +471,9 @@ class prefix_tree(graph):
 
         Pre-condition: n is a valid node in the main part of the tree
         """
-        #for x in self._possible_pres(n):
-        for x in self.node_list[n.y-1][:n.x]:
-            if n in self.post(x): return x
-        return None
+        return next(
+            (x for x in self.node_list[n.y - 1][: n.x] if n in self.post(x)), None
+        )
 
     def r_pre(self,n):
         """Traverses as far up diagonally through predecessors as possible
@@ -762,7 +738,9 @@ class prefix_tree(graph):
         if pre is None:
             return (None,None,None,None)
 
-        b = None; c = None; d = None;
+        b = None
+        c = None
+        d = None;
         top = self.top(a)
         # ∃ b s.t. b.x > pre(a).x
         poss_b = self._possible_pres(a)
@@ -772,10 +750,9 @@ class prefix_tree(graph):
         for x in poss_b:
             # Figure out if a valid remapping exists
             c,d = self._valid_tops(a,(top,x),pre,top)
-            if c is not None:
-                # Ignore possibilities that are immediately redundant
-                if not self._is_pg_subset((*c,*d),(x,)):
-                    b=x; break;
+            if c is not None and not self._is_pg_subset((*c, *d), (x,)):
+                b=x
+                break;
 
         if b is None: return (None,None,None,None)
 
@@ -810,7 +787,9 @@ class prefix_tree(graph):
         if pre is None:
             return (None,None,None,None)
 
-        b = None; c = None; d = None;
+        b = None
+        c = None
+        d = None;
         top = self.top(a)
         # Check each possible pre
         poss_b = list(reversed(self._possible_pres(a)))
@@ -820,10 +799,9 @@ class prefix_tree(graph):
         for x in poss_b:
             # Figure out if a valid remapping exists
             c,d = self._valid_tops(a,(top,x),pre,top)
-            if c is not None:
-                # Ignore possibilities that are immediately redundant
-                if not self._is_pg_subset((*c,*d),(x,)):
-                    b=x; break;
+            if c is not None and not self._is_pg_subset((*c, *d), (x,)):
+                b=x
+                break;
 
         if b is None:
             return (None,None,None,None)
@@ -1158,8 +1136,8 @@ class prefix_tree(graph):
 
     def harris_step(self,transform,steps=1,bot_bit=None,top_bit=None):
         """Performs a sequence of transforms that lead to a Harris step"""
-        if top_bit==None: top_bit=self.w
-        if bot_bit==None: bot_bit=0
+        if top_bit is None: top_bit=self.w
+        if bot_bit is None: bot_bit=0
         if steps==0: return
         # Harris space is different from transform space
         # Brent-Kung is the L corner of Harris space
@@ -1206,10 +1184,7 @@ class prefix_tree(graph):
             else:
                 continue
             changed=True; break;
-        if changed:
-            return 1+self.compact()
-        else:
-            return 0
+        return 1+self.compact() if changed else 0
 
     def reduce_idem(self):
         """Eliminates redundant nodes
@@ -1268,10 +1243,10 @@ class prefix_tree(graph):
     def trim_layer(self):
         """Trims the last row of the tree if it is empty"""
         # Check if last row is just buffers
-        if any([ \
-               (node._exists(self.top(x)) and not node._isbuf(self.top(x))) \
-               for x in self.node_list[-1] \
-               ]): return False
+        if any(
+            (node._exists(self.top(x)) and not node._isbuf(self.top(x)))
+            for x in self.node_list[-1]
+        ): return False
         [self.shift_node(x) for x in self.node_list[-1]]
         [self.remove_node(x) for x in self.node_list[-1]]
         del self.node_list[-1]
@@ -1347,10 +1322,7 @@ class prefix_tree(graph):
 
         # Helper function to add invis node next to node
         def add_invis(orig_pos,x_dir=1,y_dir=1):
-            if not orig_pos[1].is_integer():
-                y_space_ = y_space / 2
-            else:
-                y_space_ = y_space
+            y_space_ = y_space if orig_pos[1].is_integer() else y_space / 2
             new_pos = [orig_pos[0]+x_space*x_dir,orig_pos[1]+y_space_*y_dir]
             new_pos = parse_pos(new_pos,False)
             new_n = pydot.Node(new_pos,style='invis',pos=new_pos,label="")

@@ -35,24 +35,26 @@ class adder_tree(prefix_tree):
     def _verilog_preamble(self,top_module):
         """Verilog preamble for the adder's HDL"""
 
-        preamble = []
         used_modules = set()
 
-        # Main module header
-        preamble.append("""
+        preamble = [
+            """
 module {1}(cout, sum, a, b, cin);
 
 	input [{0}:0] a, b;
 	input cin;
 	output [{0}:0] sum;
 	output cout;
-""".format(self.w-1,top_module))
+""".format(
+                self.w - 1, top_module
+            )
+        ]
 
         # Wire definitions
 
         # set of all wires
-        wire_set = set([e[2]['edge_name'] for e in self.edges(data=True)])
-        
+        wire_set = {e[2]['edge_name'] for e in self.edges(data=True)}
+
         # Special-named wires
         wires1 = ["\twire"]
 
@@ -68,33 +70,20 @@ module {1}(cout, sum, a, b, cin);
         wires1 = ''.join(wires1)[:-1] + ";"
         wires2 = ''.join(wires2)[:-1] + ";"
 
-        # Add both kinds of wires to preamble
-        preamble.append(wires1)
-        preamble.append(wires2)
-        preamble.append('')
-
-        ### Add normal pre-processing nodes
-
-        preamble.append("// start of pre-processing logic\n")
+        preamble.extend((wires1, wires2, '', "// start of pre-processing logic\n"))
         # Iterate over all pre-processing nodes
         for n in self.node_list[0]:
             preamble.append(n.hdl(language="verilog"))
             used_modules.add(n.m)
 
-        preamble.append('')
-
-        ### Add normal post-processing nodes
-
-        preamble.append("// start of post-processing logic\n")
+        preamble.extend(('', "// start of post-processing logic\n"))
         # Iterate over all post-processing nodes
         for n in self.node_list[-1]:
             n.ins['pin'][0]="$p{0}".format(n.x)
             preamble.append(n.hdl(language="verilog"))
             used_modules.add(n.m)
 
-        preamble.append('')
-
-        preamble.append("// start of custom pre/post logic\n")
+        preamble.extend(('', "// start of custom pre/post logic\n"))
         ### Add custom pre/post processing
 
         # Additional pre node to handle cout
@@ -117,16 +106,14 @@ module {1}(cout, sum, a, b, cin);
     def _vhdl_preamble(self,top_module):
         """VHDL preamble for the adder's HDL"""
 
-        preamble = []
         used_modules = set()
 
-        # Library imports
-        preamble.append("""
+        preamble = [
+            """
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std;""")
-        # Entity definition
-        preamble.append("""
+use ieee.numeric_std;""",
+            """
 entity {1} is
 	port (
 		a,b : in std_logic_vector({0} downto 0);
@@ -135,15 +122,16 @@ entity {1} is
 		sum : out std_logic_vector({0} downto 0)
 	);
 end entity;
-""".format(self.w-1,top_module))
-
-        # Architecture definition
-        preamble.append("architecture pptree of adder is")
+""".format(
+                self.w - 1, top_module
+            ),
+            "architecture pptree of adder is",
+        ]
 
         # Wire definitions
 
         # set of all wires
-        wire_set = set([e[2]['edge_name'] for e in self.edges(data=True)])
+        wire_set = {e[2]['edge_name'] for e in self.edges(data=True)}
 
         # Special-named wires
         wires1 = ["\tsignal"]
@@ -160,35 +148,23 @@ end entity;
         wires1 = ''.join(wires1)[:-1] + " : std_logic;"
         wires2 = ''.join(wires2)[:-1] + " : std_logic;"
 
-        # Add both kinds of wires to architecture definition
-        preamble.append(wires1)
-        preamble.append(wires2)
-        preamble.append("\nbegin\n")
+        preamble.extend(
+            (wires1, wires2, "\nbegin\n", "-- start of pre-processing logic\n")
+        )
 
-        ### Add normal pre-processing nodes
-
-        preamble.append("-- start of pre-processing logic\n")
         # Iterate over all pre-processing nodes
         for n in self.node_list[0]:
             preamble.append(n.hdl(language="vhdl"))
             used_modules.add(n.m)
 
-        preamble.append('')
-
-        ### Add normal post-processing nodes
-
-        preamble.append("-- start of post-processing logic\n")
+        preamble.extend(('', "-- start of post-processing logic\n"))
         # Iterate over all post-processing nodes
         for n in self.node_list[-1]:
             n.ins['pin'][0]="$p{0}".format(n.x)
             preamble.append(n.hdl(language="vhdl"))
             used_modules.add(n.m)
 
-        preamble.append('')
-        
-        ### Add custom pre/post processing
-        
-        preamble.append("-- start of custom pre/post logic\n")
+        preamble.extend(('', "-- start of custom pre/post logic\n"))
         # Additional pre node to handle cout
         cout_pre = """
 	{1}_cout: {1}

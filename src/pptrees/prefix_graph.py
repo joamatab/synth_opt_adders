@@ -51,19 +51,19 @@ class prefix_node():
         # All nodes start, by default, outside of any blocks
         self.block=None
 
-    def _exists(n):
+    def _exists(self):
         """Static helper function that checks whether a node is not invis"""
-        return n is not None and modules[n.m]['exists']
+        return self is not None and modules[self.m]['exists']
 
-    def _isbuf(n):
+    def _isbuf(self):
         """Static helper function that checks whether a node is a buffer"""
-        return n is not None and modules[n.m]['buf']
+        return self is not None and modules[self.m]['buf']
 
-    def _in_tree(n):
+    def _in_tree(self):
         """Static helper function that checks whether a node is in the tree"""
-        return n is not None and modules[n.m]['type']=='main'
+        return self is not None and modules[self.m]['type'] == 'main'
 
-    def _parse_net(x):
+    def _parse_net(self):
         """Static helper function that converts a net's ID to its name in HDL
 
         These come in 3 possible flavors:
@@ -71,39 +71,40 @@ class prefix_node():
             - Integer (assigned net) -> parsed to n`Integer
             - Hardcoded name ($net_name) -> parsed to net_name
         """
-        if x is None:
+        if self is None:
             return "n0"
-        if isinstance(x,int):
-            return "n"+str(x)
-        if "$" in x:
-            return x.replace("$","")
-        raise TypeError("net stored in node {0} is invalid".format(repr(x)))
+        if isinstance(self, int):
+            return f"n{str(self)}"
+        if "$" in self:
+            return self.replace("$", "")
+        raise TypeError("net stored in node {0} is invalid".format(repr(self)))
 
     def _verilog(self):
         """Return single line of Verilog consisting of module instantiation"""
 
         # Fill in the module instantiation
         ret="\t{3} {0}_{1}_{2} (".format(self.m,self.x,self.y,self.m)
-        
+
         # Create list of all instance pins and copy in unformatted net IDs
         pins=self.ins.copy()
         pins.update(self.outs)
-        
+
         # Format net IDs and add them to module instantation line
         for a in pins:
-            ret+=" ."+a+"( {"
+            ret += f" .{a}" + "( {"
             ret+=','.join(reversed([prefix_node._parse_net(x) for x in pins[a]]))
             ret+='} ),'
-        ret=ret[:-1]+' );'
-        
+        ret = f'{ret[:-1]} );'
+
         return ret
 
     def _vhdl(self):
         """Return single line of VHDL consisting of module instantiation"""
 
-        # Fill in the module instantiation
-        ret="\t{0}_{1}_{2}: {3}\n".format(self.m,self.x,self.y,self.m)
-        ret+="\t\tport map ("
+        ret = (
+            "\t{0}_{1}_{2}: {3}\n".format(self.m, self.x, self.y, self.m)
+            + "\t\tport map ("
+        )
 
         # Create list of all instance pins and copy in unformatted net IDs
         pins=self.ins.copy()
@@ -230,7 +231,7 @@ class prefix_graph(nx.MultiDiGraph):
         """
         if not isinstance(n,prefix_node):
             raise TypeError("can only add prefix_nodes to prefix_graph")
-        if not (n.x<self.w and n.x>=0):
+        if n.x >= self.w or n.x < 0:
             raise ValueError("cannot add a node with x beyond the width")
         if n.y<0:
             raise ValueError("cannot add a node with negative level")
@@ -243,7 +244,7 @@ class prefix_graph(nx.MultiDiGraph):
         if n.y==len(self.node_list):
             self.node_list.append([None]*self.w)
         self.node_list[n.y][n.x]=n
-        
+
         # Add node attributes to NetworkX parent graph class
         # Some of these are used for GraphViz visualization
         n_kwargs = modules[n.m]
@@ -258,7 +259,7 @@ class prefix_graph(nx.MultiDiGraph):
 
     def remove_node(self, n):
         """Removes node from graph as well as nodelist array"""
-        if n==None:
+        if n is None:
             return
         self.node_list[n.y][n.x]=None
         super().remove_node(n)
@@ -276,7 +277,8 @@ class prefix_graph(nx.MultiDiGraph):
 
         Post-condition: adds edge between target nodes
         """
-        p1,b1=pin1; p2,b2=pin2;
+        p1,b1=pin1
+        p2,b2=pin2;
         if not isinstance(n1,prefix_node) or not isinstance(n2,prefix_node):
             raise TypeError("can only add edge between nodes")
         if abs(n1.y-n2.y)!=1:
@@ -290,16 +292,21 @@ class prefix_graph(nx.MultiDiGraph):
         edge_name = self.next_net
         self.next_net += 1
         # If net is already named, use pre-existing name
-        if not n1.outs[p1][b1] is None: edge_name = n1.outs[p1][b1]
-        elif not n2.ins[p2][b2] is None: edge_name = n2.ins[p2][b2]
+        if n1.outs[p1][b1] is not None: edge_name = n1.outs[p1][b1]
+        elif n2.ins[p2][b2] is not None: edge_name = n2.ins[p2][b2]
         n1.outs[p1][b1]=edge_name
         n2.ins[p2][b2]=edge_name
 
         # Styles the edge for GraphViz visualization
-        edge_kwargs={'arrowhead':'none',
-                     'headport':'ne','tailport':'sw',
-                     'ins':pin1,'outs':pin2}
-        edge_kwargs['edge_name']=edge_name
+        edge_kwargs = {
+            'arrowhead': 'none',
+            'headport': 'ne',
+            'tailport': 'sw',
+            'ins': pin1,
+            'outs': pin2,
+            'edge_name': edge_name,
+        }
+
         if n2.x==n1.x:
             edge_kwargs['headport']='n'
             edge_kwargs['tailport']='s'
@@ -338,9 +345,9 @@ class prefix_graph(nx.MultiDiGraph):
         nodes is a list of nodes, all of which have attribute block = None
         Post-condition: adds new module block, containing specific nodes
         """
-        if not all([n.block is None for n in nodes]):
+        if any(n.block is not None for n in nodes):
             raise ValueError("cannot add node to multiple blocks")
-        if len([n.y for n in nodes])!=len(set([n.y for n in nodes])):
+        if len([n.y for n in nodes]) != len({n.y for n in nodes}):
             raise ValueError("block cannot have multiple nodes on same level")
 
         # If the list of nodes is empty, return None
@@ -424,9 +431,7 @@ class prefix_graph(nx.MultiDiGraph):
         # Re-create path
         n2 = None
         path = []
-        while n1 != n2:
-            if not n1 in dists:
-                break
+        while n1 != n2 and n1 in dists:
             path.append(n1)
             n2 = n1
             n1 = dists[n1][0]
@@ -482,7 +487,8 @@ class prefix_graph(nx.MultiDiGraph):
             # Define block
             block_def="\n\nmodule block_{0}(".format(b)
             # List all ins/outs in module definition
-            for x in tmp: block_def+=' '+sub_brackets(x)+','
+            for x in tmp:
+                block_def += f' {sub_brackets(x)},'
             block_def = block_def[:-1]+');\n\n'
             # Declare all inputs and outputs
             block_def += "	input"
@@ -598,15 +604,15 @@ class prefix_graph(nx.MultiDiGraph):
             end_string = "\nendmodule\n"
             comment_string = "\n// start of tree row {0}\n"
             file_suffix = ".v"
-        if language == "vhdl":
+        elif language == "vhdl":
             end_string = "\nend architecture\n"
             comment_string = "\n-- start of tree row {0}\n"
             file_suffix = ".vhd"
 
         # Locate mapping file and check its existence
         with importlib.resources.path("pptrees","mappings") as pkg_map_dir:
-            pkg_map_file = pkg_map_dir / (mapping+'_map'+file_suffix)
-            local_map_file = outdir / (mapping+'_map'+file_suffix)
+            pkg_map_file = pkg_map_dir / f'{mapping}_map{file_suffix}'
+            local_map_file = outdir / f'{mapping}_map{file_suffix}'
 
             if not pkg_map_file.is_file():
                 raise ValueError("unsupported mapping requested")
@@ -641,7 +647,7 @@ class prefix_graph(nx.MultiDiGraph):
 
         # Write to file
         if out is not None:
-            
+
             with open(out,'w') as f:
                 print(hdl,file=f)
 
